@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const { connectDatabase } = require('./persistence');
+
+connectDatabase();
 
 app.use(express.json());
 
