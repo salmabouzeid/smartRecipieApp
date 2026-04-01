@@ -7,11 +7,11 @@ let recipes;
 // connecting to database
 async function connectDatabase() {
     try {
-        client = new mongodb.MongoClient('mongodb+srv://user:user%401256@salma12.04p91.mongodb.net/');
+        client = new mongodb.MongoClient(process.env.MONGO_URI);
         
         await client.connect();
 
-        db = client.db('infs3201_fall2025');
+        db = client.db('smartRecipie');
 
         recipes = db.collection('recipes');
 
@@ -22,8 +22,13 @@ async function connectDatabase() {
     }
 }
 
+function getRecipesCollection() {
+    return recipes;
+}
+
+
 module.exports = {
-    connectDatabase,
+    connectDatabase,getRecipesCollection,
     getDB: () => db,
     getRecipes: () => recipes
 };

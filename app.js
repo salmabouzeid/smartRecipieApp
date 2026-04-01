@@ -1,11 +1,12 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
-const { connectDatabase } = require('./persistence');
-
+const cors= require('cors');
+const { connectDatabase, getRecipesCollection } = require('./persistence');
 connectDatabase();
 
 app.use(express.json());
-
+app.use(cors());
 //routes
 app.get('/', (req, res) => {
     res.send('Backend is running');
@@ -61,6 +62,52 @@ app.post('/generate', async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: 'Error generating recipe' });
+    }
+});
+
+// Save a recipe to MongoDB
+app.post('/recipes', async (req, res) => {
+    try {
+        const { title, ingredients, instructions, calories, substitutions, notes } = req.body;
+
+        if (!title || !ingredients || !instructions) {
+            return res.status(400).json({ message: 'Title, ingredients, and instructions are required' });
+        }
+
+        const recipe = {
+            title,
+            ingredients,
+            instructions,
+            calories: calories || 'Not provided',
+            substitutions: substitutions || [],
+            notes: notes || '',
+            createdAt: new Date()
+        };
+
+        const recipesCollection = getRecipesCollection();
+        const result = await recipesCollection.insertOne(recipe);
+
+        res.status(201).json({
+            message: 'Recipe saved successfully',
+            recipeId: result.insertedId,
+            recipe: recipe
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving recipe' });
+    }
+});
+
+// Retrieve all recipes from MongoDB
+app.get('/recipes', async (req, res) => {
+    try {
+        const recipesCollection = getRecipesCollection();
+        const allRecipes = await recipesCollection.find().toArray();
+
+        res.status(200).json(allRecipes);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving recipes' });
     }
 });
 
