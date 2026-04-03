@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from ai_service import generate_recipe_ai
+import json
 
 load_dotenv()
 
@@ -28,23 +30,20 @@ def generate_recipe():
 
     if not ingredients:
         return jsonify({"message": "Ingredients are required"}), 400
-
-    # AI INTEGRATION GOES HERE
-    # Later, the AI teammate can replace this placeholder recipe
-    # with a real AI-generated response based on the ingredients.
-
-    recipe = {
-        "title": "Sample Recipe",
-        "ingredients": ingredients,
-        "instructions": [
-            "Prepare the ingredients.",
-            "Mix everything together.",
-            "Cook and serve."
-        ],
-        "calories": "Will be added later",
-        "substitutions": ["Alternative ingredients will be added later"],
-        "notes": "This is a placeholder response until AI integration is added."
-    }
+        
+    ai_response = generate_recipe_ai(ingredients)
+    
+    try:
+        recipe = json.loads(ai_response)
+    except:
+        recipe = {
+            "title": "AI Recipe",
+            "ingredients": ingredients,
+            "instructions": [ai_response],
+            "calories": "N/A",
+            "substitutions": [],
+            "notes": "AI response was not structured"
+            }
 
     return jsonify(recipe), 200
 
