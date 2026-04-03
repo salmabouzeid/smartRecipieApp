@@ -18,7 +18,7 @@ Features:
     •	Recipe history saved in the database
 Tech stack:
   •	Frontend: HTML, CSS, JavaScript
-  •	Backend: Node.js + Express
+  •	Backend: python+flask
   •	AI: Google Gemini API
   •	Database: MongoDB Atlas
   •	DevOps: GitHub, GitHub Actions, Docker
