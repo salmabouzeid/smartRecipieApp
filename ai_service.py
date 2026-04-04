@@ -1,25 +1,40 @@
-import google.generativeai as genai
 import os
+from dotenv import load_dotenv
+from google import genai
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-model = genai.GenerativeModel("gemini-1.5-flash")
+load_dotenv()
 
 def generate_recipe_ai(ingredients):
+    api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY not found in .env")
+
+    client = genai.Client(api_key=api_key)
+
     prompt = f"""
     You are a cooking assistant.
 
     Based on these ingredients: {ingredients}
 
-    Generate a recipe with:
-    - Title
-    - Ingredients list
-    - Step-by-step instructions
-    - Estimated calories
-    - Ingredient substitutions
+    Generate a recipe in pure JSON only.
+    Use this exact structure:
+    {{
+    "title": "string",
+    "ingredients": ["string", "string"],
+    "instructions": ["string", "string"],
+    "calories": "string",
+    "substitutions": ["string", "string"],
+    "notes": "string"
+    }}
 
-    Return the result in JSON format.
+    Do not add markdown fences.
+    Do not add extra text outside the JSON.
     """
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
     return response.text

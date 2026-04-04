@@ -3,10 +3,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
+load_dotenv()
 from ai_service import generate_recipe_ai
 import json
 
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -30,22 +30,27 @@ def generate_recipe():
 
     if not ingredients:
         return jsonify({"message": "Ingredients are required"}), 400
-        
-    ai_response = generate_recipe_ai(ingredients)
-    
-    try:
-        recipe = json.loads(ai_response)
-    except:
-        recipe = {
-            "title": "AI Recipe",
-            "ingredients": ingredients,
-            "instructions": [ai_response],
-            "calories": "N/A",
-            "substitutions": [],
-            "notes": "AI response was not structured"
-            }
 
-    return jsonify(recipe), 200
+    try:
+        ai_response = generate_recipe_ai(ingredients)
+        ai_response = ai_response.strip()
+
+        if ai_response.startswith("```json"):
+            ai_response = ai_response.replace("```json", "", 1).strip()
+        if ai_response.startswith("```"):
+            ai_response = ai_response.replace("```", "", 1).strip()
+        if ai_response.endswith("```"):
+            ai_response = ai_response[:-3].strip()
+
+        recipe = json.loads(ai_response)
+        return jsonify(recipe), 200
+
+    except Exception as e:
+        print("Generate error:", e)
+        return jsonify({
+            "message": "Recipe generation failed",
+            "error": str(e)
+        }), 500
 
 
 @app.route('/recipes', methods=['POST'])
@@ -86,4 +91,4 @@ def get_recipes():
     return jsonify(recipes), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)))
