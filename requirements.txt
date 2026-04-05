@@ -1,2 +1,7 @@
 flask
+flask-cors
+python-dotenv
+pymongo
 gunicorn
+google-genai
+python-dotenv

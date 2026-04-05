@@ -5,16 +5,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<script src="script.js"></script>
-
 <body>
+  <div class="bg-circle bg1"></div>
+  <div class="bg-circle bg2"></div>
+  <div class="bg-circle bg3"></div>
 
-  <h1>Smart Recipe App </h1>
+  <div class="page">
+    <div class="app-card">
+      <div class="hero">
+        <div class="hero-text">
+          <p class="tag">🍴 Smart Recipe Generator</p>
+          <h1>Cook something with ingrediants you have</h1>
+          <p class="subtitle">
+            Enter your ingredients and get a recipe in seconds.
+          </p>
+        </div>
 
-  <input type="text" id="ingredients" placeholder="Enter ingredients..." />
-  <button onclick="getRecipe()">Generate Recipe</button>
+        <div class="hero-icons">
+          <span>🥑</span>
+          <span>🍅</span>
+          <span>🥕</span>
+          <span>🍝</span>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <label for="ingredients">Ingredients</label>
+        <input type="text" id="ingredients" placeholder="Try: rice, chicken, garlic, cream..."
+        />
+      </div>
+
+      <div class="button-group">
+        <button class="generate-btn" onclick="getRecipe()">Generate Recipe</button>
+        <button class="saved-btn" onclick="loadRecipes()">Saved Recipes</button>
+      </div>
 
   <div id="result"></div>
+
+   </div>
+  </div>
+
+  <script src="script.js"></script>
+
 
 </body>
 </html>
