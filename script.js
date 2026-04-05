@@ -1,3 +1,8 @@
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "";
+
 let currentRecipe = null;
 
 async function getRecipe() {
@@ -13,7 +18,7 @@ async function getRecipe() {
   resultDiv.innerHTML = `<div class="message-box">Loading recipe...</div>`;
 
   try {
-    const response = await fetch("/generate", { 
+    const response = await fetch(`${API_URL}/generate`, { 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +73,7 @@ async function saveRecipe() {
   }
 
   try {
-    const response = await fetch("/recipes", {
+    const response = await fetch(`${API_URL}/recipes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -95,7 +100,7 @@ async function loadRecipes() {
   resultDiv.innerHTML = `<div class="message-box">Loading saved recipes...</div>`;
 
   try {
-    const response = await fetch("http://localhost:5000/recipes");
+    const response = await fetch(`${API_URL}/recipes`);
     const data = await response.json();
 
     if (!response.ok) {
