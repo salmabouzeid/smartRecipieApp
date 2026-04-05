@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -20,7 +20,11 @@ recipes_collection = db["recipies"]
 
 @app.route('/')
 def home():
-    return "Smart Recipe App Running"
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.', path)
 
 
 @app.route('/generate', methods=['POST'])
