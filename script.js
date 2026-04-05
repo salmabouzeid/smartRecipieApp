@@ -13,7 +13,7 @@ async function getRecipe() {
   resultDiv.innerHTML = `<div class="message-box">Loading recipe...</div>`;
 
   try {
-    const response = await fetch("http://localhost:5000/generate", { 
+    const response = await fetch("/generate", { 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ async function saveRecipe() {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/recipes", {
+    const response = await fetch("/recipes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
