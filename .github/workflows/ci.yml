@@ -27,7 +27,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t salmatarek5/smartrecipeapp:latest .
+        run: docker build -t salmatarek5/smart-recipe-app:latest .
 
       - name: Log in to Docker Hub
         if: github.ref == 'refs/heads/main'
@@ -41,12 +41,11 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            -t salmatarek5/smartrecipeapp:latest \
-            -t salmatarek5/smartrecipeapp:${{ github.sha }} \
+            -t salmatarek5/smart-recipe-app:latest \
+            -t salmatarek5/smart-recipe-app:${{ github.sha }} \
             --push .
 
       - name: Trigger Render deploy
         if: github.ref == 'refs/heads/main'
-        run: curl "$RENDER_DEPLOY_URL"
-        env:
-          RENDER_DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_URL }}
+        run: |
+          curl "${{ secrets.RENDER_DEPLOY_URL }}?imgURL=docker.io/salmatarek5/smart-recipe-app:${{ github.sha }}"
