@@ -1,15 +1,14 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
+      - develop
+  pull_request:
 
 jobs:
-  build-and-check:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,28 +23,21 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Build Docker image
-        run: docker build --platform linux/amd64 -t salmatarek5/smartrecipeapp:latest .
-
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: build-and-check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Build Docker image
+        run: docker build -t salmatarek5/smartrecipeapp:latest .
+
       - name: Log in to Docker Hub
+        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push amd64 image
+        if: github.ref == 'refs/heads/main'
         run: |
           docker buildx build \
             --platform linux/amd64 \
@@ -53,7 +45,8 @@ jobs:
             -t salmatarek5/smartrecipeapp:${{ github.sha }} \
             --push .
 
-      - name: Trigger Render deploy for exact image
-        run: |
-          ENCODED_IMG_URL="docker.io%2Fsalmatarek5%2Fsmartrecipeapp%3A${{ github.sha }}"
-          curl "${{ secrets.RENDER_DEPLOY_URL }}&imgURL=${ENCODED_IMG_URL}"
+      - name: Trigger Render deploy
+        if: github.ref == 'refs/heads/main'
+        run: curl "$RENDER_DEPLOY_URL"
+        env:
+          RENDER_DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_URL }}
