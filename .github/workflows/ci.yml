@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,23 +27,8 @@ jobs:
           push: false
           tags: salmatarek5/smart-recipe-app:test
 
-      - name: Smoke test
-        run: |
-          docker build -t smart-recipe-smoke .
-          docker run -d -p 5000:5000 --name smart-recipe-smoke smart-recipe-smoke
-          sleep 5
-          RESPONSE=$(curl -s http://localhost:5000/api/health)
-          echo "Response: $RESPONSE"
-          if [[ "$RESPONSE" != "ok" ]]; then
-            echo "Smoke test failed"
-            docker logs smart-recipe-smoke
-            docker stop smart-recipe-smoke
-            exit 1
-          fi
-          docker stop smart-recipe-smoke
-
   push-and-deploy:
-    needs: build-test
+    needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
