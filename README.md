@@ -25,3 +25,9 @@ Tech stack:
   •	Deployment: Render
   
 Work will be splitted soon.
+
+How to run 
+Open the live URL: 
+https://smart-recipe-app-ns8u.onrender.com
+For CI/CD
+Commit or Merge to main branch and wait a few minutes. Render then redeploys and change is visible.
