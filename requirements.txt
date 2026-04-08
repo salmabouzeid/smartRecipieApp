@@ -5,3 +5,5 @@ pymongo
 gunicorn
 google-genai
 python-dotenv
+pytest
+pytest-flask
