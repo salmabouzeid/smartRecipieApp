@@ -14,6 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-flask
+
+      - name: Run 12 Unit & Smoke Tests
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          DB_NAME: "smartRecipie" 
+          GEMINI_API_KEY: "test_key_not_used"
+        run: |
+          pytest test.py -v
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:

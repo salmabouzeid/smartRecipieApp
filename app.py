@@ -18,6 +18,10 @@ print("Database connected")
 db = client[os.getenv("DB_NAME")]
 recipes_collection = db["recipies"]
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/')
 def home():
     return send_from_directory('.', 'index.html')
@@ -52,7 +56,7 @@ def generate_recipe():
     except Exception as e:
         print("Generate error:", e)
         return jsonify({
-            "message": "Recipe generation failed",
+            "message": "AI has too many requests.. refresh and try again!",
             "error": str(e)
         }), 500
 
