@@ -23,7 +23,7 @@ body {
 .bg1 {
   width: 260px;
   height: 260px;
-  background: #dc5b97;
+  background: #3327d9;
   top: -70px;
   left: -70px;
 }
@@ -31,7 +31,7 @@ body {
 .bg2 {
   width: 320px;
   height: 320px;
-  background: #e962c9;
+  background: #101888;
   right: -100px;
   top: 120px;
 }
@@ -39,7 +39,7 @@ body {
 .bg3 {
   width: 280px;
   height: 280px;
-  background: #e6f4ea;
+  background: #3c1191;
   bottom: -90px;
   left: 20%;
 }
